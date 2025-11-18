@@ -1,0 +1,22 @@
+CREATE TABLE messages FOR ROLE admin AGE adult;
+
+CREATE TABLE algorithms FOR ROLE admin;
+
+CREATE TABLE keys FOR ROLE admin;
+
+CREATE TABLE hashes FOR ROLE admin;
+
+CREATE COLLECTION sequences FOR ROLE admin;
+
+SEND MESSAGE TO messages_admin_adult {
+    "content": "This is a secret message",
+    "sender": "alice@dnacrypt.com",
+    "receiver": "bob@dnacrypt.com",
+    "urgency": "high"
+};
+
+
+LIST MESSAGES FROM messages_admin_adult;
+
+SHOW TABLES;
+SHOW COLLECTIONS;

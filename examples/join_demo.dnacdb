@@ -1,0 +1,9 @@
+
+
+CREATE TABLE messages FOR ROLE demo AGE adult;
+CREATE TABLE algorithms FOR ROLE demo;
+CREATE COLLECTION sequences FOR ROLE demo;
+
+
+SHOW TABLES;
+SHOW COLLECTIONS;

@@ -1,0 +1,41 @@
+
+
+MAKE TABLE users WITH (name:text, email:text, age:int);
+
+PUT INTO users DATA {"name": "Alice", "email": "alice@dnacrypt.com", "age": 30};
+PUT INTO users DATA {"name": "Bob", "email": "bob@dnacrypt.com", "age": 25};
+PUT INTO users DATA {"name": "Charlie", "email": "charlie@dnacrypt.com", "age": 35};
+
+FETCH FROM users WHERE age > 26;
+
+CHANGE IN users SET age = 31 WHERE name = "Alice";
+
+FETCH FROM users WHERE name = "Alice";
+
+
+MAKE COLLECTION logs;
+
+PUT INTO logs DATA {"level": "INFO", "message": "System started", "timestamp": "2025-11-14T10:00:00"};
+PUT INTO logs DATA {"level": "ERROR", "message": "Connection failed", "details": {"error_code": 500, "retry": true}};
+PUT INTO logs DATA {"level": "DEBUG", "message": "User logged in", "user_id": 123, "metadata": {"ip": "192.168.1.1", "browser": "Chrome"}};
+
+FETCH FROM logs ALL;
+
+MAKE TABLE products WITH (name:text, price:float, stock:int);
+
+PUT INTO products DATA {"name": "Laptop", "price": 999.99, "stock": 50};
+PUT INTO products DATA {"name": "Mouse", "price": 29.99, "stock": 200};
+PUT INTO products DATA {"name": "Keyboard", "price": 79.99, "stock": 150};
+
+FETCH FROM products WHERE price > 50;
+
+MAKE COLLECTION analytics;
+
+PUT INTO analytics DATA {"event": "page_view", "page": "/home", "user_id": 123};
+PUT INTO analytics DATA {"event": "click", "element": "signup_button", "campaign": "winter"};
+PUT INTO analytics DATA {"event": "purchase", "amount": 99.99, "items": ["laptop", "mouse"]};
+
+FETCH FROM analytics ALL;
+
+SHOW TABLES;
+SHOW COLLECTIONS;

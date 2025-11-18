@@ -1,0 +1,31 @@
+
+
+CREATE TABLE messages FOR ROLE demo AGE adult;
+CREATE COLLECTION sequences FOR ROLE demo;
+
+
+
+$msg1 = SEND MESSAGE TO messages_demo_adult {"content": "Project Alpha encryption keys rotated", "sender": "alice@dnacrypt.com", "receiver": "bob@dnacrypt.com", "urgency": "high"};
+
+$msg2 = SEND MESSAGE TO messages_demo_adult {"content": "Routine system check completed", "sender": "bob@dnacrypt.com", "receiver": "charlie@dnacrypt.com", "urgency": "medium"};
+
+$msg3 = SEND MESSAGE TO messages_demo_adult {"content": "URGENT Security breach in sector 7", "sender": "charlie@dnacrypt.com", "receiver": "alice@dnacrypt.com", "urgency": "critical"};
+
+
+STORE SEQUENCE IN sequences_demo {"link_id": "${msg1.link_id}", "original": "ATCGATCGATCGAAATTTGGGCCC", "encrypted": "GCTAGCTAGCTATTTAGGGCCCAAA", "digest": "AGCT", "final": "GCTAGCTAGCTATTTAGGGCCCAAA"};
+
+STORE SEQUENCE IN sequences_demo {"link_id": "${msg2.link_id}", "original": "AAATTTGGGCCCAAATTTGGGCCC", "encrypted": "TTTAAACCCGGGTTTAAACCCGGG", "digest": "TAGC", "final": "TTTAAACCCGGGTTTAAACCCGGG"};
+
+STORE SEQUENCE IN sequences_demo {"link_id": "${msg3.link_id}", "original": "CCCCGGGGAAAATTTTCCCCGGGG", "encrypted": "GGGGCCCCTTTTAAAAGGGGCCCC", "digest": "GCAT", "final": "GGGGCCCCTTTTAAAAGGGGCCCC"};
+
+
+JOIN messages_demo_adult WITH sequences_demo ON link_id;
+
+JOIN messages_demo_adult WITH sequences_demo ON link_id WHERE urgency = "high";
+
+JOIN messages_demo_adult WITH sequences_demo ON link_id WHERE urgency = "critical";
+
+JOIN messages_demo_adult WITH sequences_demo ON link_id WHERE sender = "alice@dnacrypt.com";
+
+
+LINK DATA WHERE link_id = "${msg1.link_id}";

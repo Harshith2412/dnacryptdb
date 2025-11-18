@@ -1,0 +1,17 @@
+{
+  "mysql": {
+    "host": "localhost",
+    "user": "root",
+    "password": "harshith",
+    "database": "dnacryptdb"
+  },
+  "mongodb": {
+    "uri": "mongodb://localhost:27017/",
+    "database": "dnacryptdb"
+  },
+  "neo4j": {
+    "uri": "bolt://localhost:7687",
+    "user": "neo4j",
+    "password": "harshith"
+  }
+}

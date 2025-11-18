@@ -1,0 +1,2 @@
+[console_scripts]
+dnacryptdb = dnacryptdb.cli:main

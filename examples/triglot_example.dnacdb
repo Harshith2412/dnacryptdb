@@ -1,0 +1,100 @@
+-- ============================================================================
+-- DNACryptDB Triglot Example
+-- Demonstrates MySQL + MongoDB + Neo4j working together
+-- ============================================================================
+
+-- Step 1: Create schema in all three databases
+-- ============================================================================
+
+-- MySQL: Structured message metadata
+CREATE TABLE messages FOR ROLE security AGE adult;
+
+-- MongoDB: Flexible DNA sequences
+CREATE COLLECTION sequences FOR ROLE security;
+
+-- Neo4j: Users and relationships (created automatically with SEND MESSAGE)
+
+-- Step 2: Create users in graph database
+-- ============================================================================
+
+CREATE USER {"email": "alice@dnacrypt.com", "role": "admin", "trust_score": 95};
+CREATE USER {"email": "bob@dnacrypt.com", "role": "user", "trust_score": 85};
+CREATE USER {"email": "charlie@dnacrypt.com", "role": "analyst", "trust_score": 90};
+
+-- Step 3: Establish trust relationships
+-- ============================================================================
+
+RELATE USER "alice@dnacrypt.com" TRUSTS USER "bob@dnacrypt.com" LEVEL 85;
+RELATE USER "bob@dnacrypt.com" TRUSTS USER "charlie@dnacrypt.com" LEVEL 75;
+RELATE USER "alice@dnacrypt.com" TRUSTS USER "charlie@dnacrypt.com" LEVEL 90;
+
+-- Step 4: Send messages (creates data in MySQL AND Neo4j graph!)
+-- ============================================================================
+
+$msg1 = SEND MESSAGE TO messages_security_adult {"content": "Encryption keys have been rotated", "sender": "alice@dnacrypt.com", "receiver": "bob@dnacrypt.com", "urgency": "high"};
+
+$msg2 = SEND MESSAGE TO messages_security_adult {"content": "Security audit completed successfully", "sender": "bob@dnacrypt.com", "receiver": "charlie@dnacrypt.com", "urgency": "medium"};
+
+$msg3 = SEND MESSAGE TO messages_security_adult {"content": "CRITICAL: Intrusion attempt detected", "sender": "charlie@dnacrypt.com", "receiver": "alice@dnacrypt.com", "urgency": "critical"};
+
+-- Step 5: Store DNA sequences in MongoDB
+-- ============================================================================
+
+STORE SEQUENCE IN sequences_security {"link_id": "${msg1.link_id}", "original": "ATCGATCGATCG", "encrypted": "GCTAGCTAGCTA", "digest": "AGCT", "final": "GCTAGCTAGCTA"};
+
+STORE SEQUENCE IN sequences_security {"link_id": "${msg2.link_id}", "original": "AAATTTGGGCCC", "encrypted": "TTTAAACCCGGG", "digest": "TAGC", "final": "TTTAAACCCGGG"};
+
+STORE SEQUENCE IN sequences_security {"link_id": "${msg3.link_id}", "original": "CCCCGGGGAAAA", "encrypted": "GGGGCCCCTTTT", "digest": "GCAT", "final": "GGGGCCCCTTTT"};
+
+-- Step 6: Track access in graph database (security monitoring)
+-- ============================================================================
+
+TRACK ACCESS BY "bob@dnacrypt.com" TO MESSAGE "${msg1.message_id}" ACTION "decrypt" SUCCESS true;
+TRACK ACCESS BY "charlie@dnacrypt.com" TO MESSAGE "${msg2.message_id}" ACTION "read" SUCCESS true;
+TRACK ACCESS BY "alice@dnacrypt.com" TO MESSAGE "${msg3.message_id}" ACTION "decrypt" SUCCESS true;
+
+-- Step 7: Security analysis using graph queries
+-- ============================================================================
+
+-- Find if there's a connection path between users
+FIND PATH FROM "alice@dnacrypt.com" TO "charlie@dnacrypt.com" MAX 5;
+
+-- Detect unusual access patterns
+FIND PATTERN users WHO accessed MORE THAN 2 messages;
+
+-- Detect anomalies in access behavior
+DETECT ANOMALY IN access patterns;
+
+-- Step 8: Polyglot joins (MySQL + MongoDB)
+-- ============================================================================
+
+JOIN messages_security_adult WITH sequences_security ON link_id;
+
+JOIN messages_security_adult WITH sequences_security ON link_id WHERE urgency = "critical";
+
+-- Step 9: Get complete data from all three databases
+-- ============================================================================
+
+LINK DATA WHERE link_id = "${msg1.link_id}";
+
+-- Step 10: Show statistics from all databases
+-- ============================================================================
+
+SHOW TABLES;
+SHOW COLLECTIONS;
+SHOW GRAPH stats;
+
+-- ============================================================================
+-- What This Demonstrates:
+-- 
+-- MySQL (ACID):      Stores message metadata with transactions
+-- MongoDB (BASE):    Stores flexible DNA sequences
+-- Neo4j (Graph):     Tracks relationships and security patterns
+-- 
+-- Security Benefits:
+-- ✓ Track who sent messages to whom (SENT relationships)
+-- ✓ Monitor message access patterns (ACCESSED relationships)
+-- ✓ Establish trust networks (TRUSTS relationships)
+-- ✓ Detect anomalies (graph pattern matching)
+-- ✓ Find connection paths (shortest path algorithms)
+-- ============================================================================

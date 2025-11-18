@@ -1,0 +1,411 @@
+# DNACryptDB Triglot Database - Quick Reference
+
+## Three Database Engines
+
+| Database | Type | Purpose | Port |
+|----------|------|---------|------|
+| **MySQL** | Relational (ACID) | Structured metadata | 3306 |
+| **MongoDB** | Document (BASE) | Flexible DNA sequences | 27017 |
+| **Neo4j** | Graph | Relationships & security | 7687 |
+
+---
+
+## Installation Commands
+
+```bash
+# Install dependencies
+pip install mysql-connector-python pymongo neo4j
+
+# Or
+pip install -r requirements.txt
+
+# Install DNACryptDB
+pip install -e .
+
+# Initialize config (now includes Neo4j!)
+dnacryptdb init
+```
+
+---
+
+## Query Syntax by Database
+
+### MySQL Operations (Structured Data)
+
+```sql
+-- Create table
+CREATE TABLE messages FOR ROLE admin AGE adult;
+
+-- Send message
+SEND MESSAGE TO messages_admin_adult {
+    "content": "Secret message",
+    "sender": "alice@dnacrypt.com",
+    "receiver": "bob@dnacrypt.com",
+    "urgency": "high"
+};
+
+-- Query
+LIST MESSAGES FROM messages_admin_adult WHERE urgency = "high";
+GET MESSAGE FROM messages_admin_adult WHERE message_id = "xyz";
+```
+
+### MongoDB Operations (Flexible Documents)
+
+```sql
+-- Create collection
+CREATE COLLECTION sequences FOR ROLE admin;
+
+-- Store sequence
+STORE SEQUENCE IN sequences_admin {
+    "link_id": "abc-123",
+    "original": "ATCGATCG",
+    "encrypted": "GCTAGCTA",
+    "digest": "AGCT",
+    "final": "GCTAGCTA"
+};
+
+-- Query
+GET SEQUENCE FROM sequences_admin WHERE link_id = "abc-123";
+```
+
+### Neo4j Operations (Graph Relationships)
+
+```sql
+-- Create user nodes
+CREATE USER {"email": "alice@dnacrypt.com", "role": "admin", "trust_score": 95};
+
+-- Create relationships
+RELATE USER "alice@dnacrypt.com" TRUSTS USER "bob@dnacrypt.com" LEVEL 85;
+
+-- Track access
+TRACK ACCESS BY "alice@dnacrypt.com" TO MESSAGE "xyz-789" ACTION "decrypt" SUCCESS true;
+
+-- Find paths
+FIND PATH FROM "alice@dnacrypt.com" TO "charlie@dnacrypt.com" MAX 5;
+
+-- Detect patterns
+FIND PATTERN users WHO accessed MORE THAN 10 messages;
+
+-- Detect anomalies
+DETECT ANOMALY IN access patterns;
+
+-- Show graph stats
+SHOW GRAPH stats;
+```
+
+---
+
+## Cross-Database Operations
+
+### Polyglot Joins (MySQL + MongoDB)
+
+```sql
+-- Join all
+JOIN messages_admin_adult WITH sequences_admin ON link_id;
+
+-- Join with filter
+JOIN messages_admin_adult WITH sequences_admin ON link_id WHERE urgency = "high";
+```
+
+### Triglot Link (All Three!)
+
+```sql
+-- Gets data from MySQL, MongoDB, AND Neo4j
+LINK DATA WHERE link_id = "abc-123";
+```
+
+**Returns:**
+```json
+{
+  "mysql_data": {
+    "message": {"sender": "alice", "content": "..."}
+  },
+  "mongodb_data": {
+    "sequence": {"encrypted_sequence": "GCTA..."}
+  },
+  "neo4j_data": {
+    "sender": "alice@dnacrypt.com",
+    "receiver": "bob@dnacrypt.com",
+    "access_count": 3,
+    "accessed_by": ["alice@dnacrypt.com", "bob@dnacrypt.com"]
+  }
+}
+```
+
+---
+
+## Security Queries (Neo4j)
+
+### Find Message Flow
+
+```sql
+-- Who did Alice send messages to?
+FIND PATH FROM "alice@dnacrypt.com" TO "bob@dnacrypt.com" MAX 3;
+```
+
+### Detect Suspicious Activity
+
+```sql
+-- Users accessing too many messages
+FIND PATTERN users WHO accessed MORE THAN 100 messages;
+
+-- Anomaly detection
+DETECT ANOMALY IN access patterns;
+```
+
+### Track Access Audit Trail
+
+```sql
+-- Record every message access
+TRACK ACCESS BY "user@email.com" TO MESSAGE "msg-id" ACTION "decrypt" SUCCESS true;
+```
+
+---
+
+## Variable System
+
+```sql
+-- Capture result
+$msg = SEND MESSAGE TO messages_demo_adult {...};
+
+-- Use in next query
+STORE SEQUENCE IN sequences_demo {"link_id": "${msg.link_id}", ...};
+TRACK ACCESS BY "alice" TO MESSAGE "${msg.message_id}" ACTION "read" SUCCESS true;
+```
+
+---
+
+## Complete Workflow Example
+
+```sql
+-- 1. Create schema
+CREATE TABLE messages FOR ROLE demo AGE adult;
+CREATE COLLECTION sequences FOR ROLE demo;
+
+-- 2. Create users (graph)
+CREATE USER {"email": "alice@dnacrypt.com", "role": "admin"};
+CREATE USER {"email": "bob@dnacrypt.com", "role": "user"};
+
+-- 3. Establish trust (graph)
+RELATE USER "alice@dnacrypt.com" TRUSTS USER "bob@dnacrypt.com" LEVEL 85;
+
+-- 4. Send message (MySQL + Neo4j)
+$msg = SEND MESSAGE TO messages_demo_adult {
+    "content": "Secret",
+    "sender": "alice@dnacrypt.com",
+    "receiver": "bob@dnacrypt.com",
+    "urgency": "high"
+};
+
+-- 5. Store sequence (MongoDB)
+STORE SEQUENCE IN sequences_demo {
+    "link_id": "${msg.link_id}",
+    "original": "ATCG",
+    "encrypted": "GCTA",
+    "digest": "AT",
+    "final": "GCTA"
+};
+
+-- 6. Track access (Neo4j)
+TRACK ACCESS BY "bob@dnacrypt.com" TO MESSAGE "${msg.message_id}" ACTION "decrypt" SUCCESS true;
+
+-- 7. Get complete picture (all 3 databases!)
+LINK DATA WHERE link_id = "${msg.link_id}";
+
+-- 8. Security analysis (Neo4j)
+FIND PATH FROM "alice@dnacrypt.com" TO "bob@dnacrypt.com" MAX 3;
+DETECT ANOMALY IN access patterns;
+```
+
+---
+
+## Data Flow Visualization
+
+```
+1. User sends message
+   ↓
+   MySQL: Stores metadata (sender, receiver, timestamp)
+   Neo4j: Creates User nodes, SENT relationship
+   
+2. System encrypts to DNA
+   ↓
+   MongoDB: Stores DNA sequences (original, encrypted)
+   
+3. Receiver decrypts message
+   ↓
+   Neo4j: Creates ACCESSED relationship
+   
+4. Security audit
+   ↓
+   Neo4j: Queries access patterns
+   MySQL: Queries message metadata
+   MongoDB: Retrieves DNA sequences
+```
+
+---
+
+## Graph Database Benefits for Security
+
+### 1. Relationship Tracking
+
+```
+(Alice)-[:SENT]->(Message)-[:RECEIVED]->(Bob)
+(Bob)-[:ACCESSED]->(Message)
+(Alice)-[:TRUSTS]->(Bob)
+```
+
+### 2. Path Finding
+
+```sql
+-- Did message leak to unauthorized person?
+FIND PATH FROM "alice@dnacrypt.com" TO "eve@attacker.com" MAX 10;
+```
+
+### 3. Anomaly Detection
+
+```sql
+-- Who's accessing unusual number of messages?
+FIND PATTERN users WHO accessed MORE THAN 100 messages;
+```
+
+### 4. Trust Network Analysis
+
+```cypher
+-- In Neo4j Browser:
+MATCH (u1:User)-[:TRUSTS]->(u2:User)-[:TRUSTS]->(u3:User)
+WHERE u1.trust_score < 50
+RETURN u1, u2, u3
+// Find low-trust chains
+```
+
+---
+
+## Comparison: Polyglot vs Triglot
+
+| Feature | Polyglot (2 DBs) | Triglot (3 DBs) |
+|---------|------------------|-----------------|
+| Structured Data | ✅ MySQL | ✅ MySQL |
+| Flexible Data | ✅ MongoDB | ✅ MongoDB |
+| Relationships | ❌ None | ✅ Neo4j |
+| Security Tracking | ❌ Limited | ✅ Graph-based |
+| Path Finding | ❌ None | ✅ Shortest path |
+| Anomaly Detection | ❌ Manual | ✅ Pattern matching |
+| Access Audit | ⚠️ Timestamps only | ✅ Full relationships |
+| Complexity | Lower | Higher |
+| Performance | Faster (2 DBs) | Slightly slower (3 DBs) |
+| **Security Score** | 85/100 | 95/100 |
+
+---
+
+## When to Use Which Database
+
+### Use MySQL when you need:
+- ACID transactions
+- Structured schemas
+- Strong consistency
+- Foreign keys
+- Complex joins within relational data
+
+### Use MongoDB when you need:
+- Flexible schemas
+- Nested documents
+- Fast writes
+- Horizontal scaling
+- Evolving data models
+
+### Use Neo4j when you need:
+- Relationship tracking
+- Path finding
+- Pattern matching
+- Social networks
+- Fraud detection
+- Access control analysis
+- Recommendation engines
+
+---
+
+## Port Summary
+
+```bash
+# Make sure these ports are open:
+MySQL:   3306
+MongoDB: 27017
+Neo4j:   7687 (Bolt protocol)
+         7474 (HTTP browser)
+```
+
+---
+
+## Testing All Three
+
+```bash
+# Run complete triglot example
+dnacryptdb run examples/triglot_complete_example.dnacdb
+
+# Expected output:
+✓ MySQL connected: dnacryptdb
+✓ MongoDB connected: dnacryptdb
+✓ Neo4j connected: bolt://localhost:7687
+
+# All queries should succeed!
+```
+
+---
+
+## Viewing Your Data
+
+### MySQL
+```bash
+mysql -u root -p dnacryptdb
+> SELECT * FROM messages_security_adult;
+```
+
+### MongoDB
+```bash
+mongosh
+> use dnacryptdb
+> db.sequences_security.find()
+```
+
+### Neo4j
+```
+Open: http://localhost:7474
+
+Run in browser:
+MATCH (n) RETURN n LIMIT 25;
+// Shows all nodes and relationships
+```
+
+---
+
+## Quick Commands
+
+```bash
+# Start all databases
+brew services start mysql
+brew services start mongodb-community
+brew services start neo4j
+
+# Or with Docker
+docker start mysql-poly mongodb-poly neo4j
+
+# Stop all
+brew services stop mysql
+brew services stop mongodb-community
+brew services stop neo4j
+
+# Check status
+brew services list
+```
+
+---
+
+## Next Steps
+
+1. ✅ Install Neo4j
+2. ✅ Update `dnacdb.config.json`
+3. ✅ Run `dnacryptdb run examples/triglot_complete_example.dnacdb`
+4. ✅ Open Neo4j Browser and visualize your graph!
+5. ✅ Try security queries
+
+**You now have a TRIGLOT database system!** 🎉

@@ -1,0 +1,36 @@
+
+MAKE TABLE employees WITH (name:text, department:text, salary:float);
+
+MAKE TABLE departments WITH (name:text, budget:float, location:text);
+
+PUT INTO employees DATA {"name": "John Doe", "department": "Engineering", "salary": 95000.00};
+PUT INTO employees DATA {"name": "Jane Smith", "department": "Marketing", "salary": 75000.00};
+PUT INTO employees DATA {"name": "Bob Johnson", "department": "Engineering", "salary": 85000.00};
+PUT INTO employees DATA {"name": "Alice Williams", "department": "Sales", "salary": 70000.00};
+PUT INTO employees DATA {"name": "Charlie Brown", "department": "Engineering", "salary": 90000.00};
+
+PUT INTO departments DATA {"name": "Engineering", "budget": 500000.00, "location": "Building A"};
+PUT INTO departments DATA {"name": "Marketing", "budget": 200000.00, "location": "Building B"};
+PUT INTO departments DATA {"name": "Sales", "budget": 150000.00, "location": "Building C"};
+
+FETCH FROM employees ALL;
+
+FETCH FROM employees WHERE salary > 80000;
+
+FETCH FROM employees WHERE department = "Engineering";
+
+FETCH FROM departments ALL;
+
+CHANGE IN employees SET salary = 100000 WHERE name = "John Doe";
+
+CHANGE IN departments SET budget = 550000 WHERE name = "Engineering";
+
+FETCH FROM employees WHERE name = "John Doe";
+
+FETCH FROM departments WHERE name = "Engineering";
+
+REMOVE FROM employees WHERE salary < 75000;
+
+FETCH FROM employees ALL;
+
+SHOW TABLES;
