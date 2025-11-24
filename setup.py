@@ -1,30 +1,32 @@
 from setuptools import setup, find_packages
-import os
 
-# Read README
-def read_file(filename):
-    with open(os.path.join(os.path.dirname(__file__), filename), encoding='utf-8') as f:
-        return f.read()
+with open("README.md", "r", encoding="utf-8") as fh:
+    long_description = fh.read()
 
 setup(
     name="dnacryptdb",
-    version="1.0.0",
+    version="2.0.0",
     author="Harshith Madhavaram",
-    author_email="madhavaram.harshith2412@gmail.com",
-    description="A polyglot database system with custom query language for MySQL and MongoDB",
-    long_description=read_file('README.md'),
+    author_email="harshith@northeastern.edu",
+    description="A secure triglot database system for DNA-based cryptographic applications",
+    long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/Harshith2412/dnacryptdb",
+    url="https://github.com/YOUR_USERNAME/dnacryptdb",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
+        "Intended Audience :: Science/Research",
         "Topic :: Database",
+        "Topic :: Security :: Cryptography",
+        "Topic :: Scientific/Engineering :: Bio-Informatics",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
@@ -32,15 +34,18 @@ setup(
     install_requires=[
         "mysql-connector-python>=8.0.0",
         "pymongo>=4.0.0",
+        "neo4j>=5.0.0",
+        "cryptography>=41.0.0",
     ],
     entry_points={
         "console_scripts": [
             "dnacryptdb=dnacryptdb.cli:main",
         ],
     },
-    keywords="database polyglot mysql mongodb dnacrypt query-language",
+    keywords="database polyglot mysql mongodb neo4j dnacrypt cryptography encryption bioinformatics",
     project_urls={
-        "Bug Reports": "https://github.com/Harshith2412/dnacryptdb/issues",
-        "Source": "https://github.com/Harshith2412/dnacryptdb",
+        "Bug Reports": "https://github.com/YOUR_USERNAME/dnacryptdb/issues",
+        "Source": "https://github.com/YOUR_USERNAME/dnacryptdb",
+        "Documentation": "https://github.com/YOUR_USERNAME/dnacryptdb/blob/main/README.md",
     },
 )

@@ -1,4 +1,11 @@
 # DNACryptDB
+[![Python Version](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![MySQL](https://img.shields.io/badge/MySQL-5.7+-blue.svg)](https://www.mysql.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-4.0+-green.svg)](https://www.mongodb.com/)
+[![Neo4j](https://img.shields.io/badge/Neo4j-4.0+-blue.svg)](https://neo4j.com/)
+
+A secure triglot database system combining MySQL, MongoDB, and Neo4j with military-grade encryption.
 
 A polyglot database system with a custom query language that unifies MySQL (relational) and MongoDB (document store) operations.
 
@@ -295,7 +302,7 @@ db.close()
 
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/dnacryptdb.git
+git clone https://github.com/Harshith2412/dnacryptdb.git
 cd dnacryptdb
 
 # Install in development mode

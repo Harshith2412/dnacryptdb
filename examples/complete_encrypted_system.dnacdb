@@ -1,0 +1,170 @@
+-- ============================================================================
+-- Complete Encrypted DNACryptDB Example
+-- Demonstrates: MySQL + MongoDB + Neo4j with Encryption Concepts
+-- ============================================================================
+
+-- NOTE: This .dnacdb file demonstrates the WORKFLOW
+-- Actual encryption happens in Python using encryption.py
+-- Here we show the commands and what gets stored
+
+-- ============================================================================
+-- PART 1: MySQL - Encrypted Message Metadata
+-- ============================================================================
+
+-- Create messages table (stores encrypted content + blind indexes)
+CREATE TABLE messages FOR ROLE secure AGE adult;
+CREATE TABLE algorithms FOR ROLE secure;
+CREATE TABLE keys FOR ROLE secure;
+CREATE TABLE hashes FOR ROLE secure;
+
+-- ============================================================================
+-- PART 2: MongoDB - Encrypted DNA Sequences
+-- ============================================================================
+
+-- Create sequences collection (stores encrypted + signed DNA)
+CREATE COLLECTION sequences FOR ROLE secure;
+
+-- ============================================================================
+-- PART 3: Neo4j - User Relationships and Security Tracking
+-- ============================================================================
+
+-- Create users in graph (email as blind index in production)
+CREATE USER {"email": "alice@dnacrypt.com", "role": "admin", "trust_score": 95};
+CREATE USER {"email": "bob@dnacrypt.com", "role": "analyst", "trust_score": 85};
+CREATE USER {"email": "charlie@dnacrypt.com", "role": "researcher", "trust_score": 90};
+
+-- Establish trust relationships
+RELATE USER "alice@dnacrypt.com" TRUSTS USER "bob@dnacrypt.com" LEVEL 85;
+RELATE USER "bob@dnacrypt.com" TRUSTS USER "charlie@dnacrypt.com" LEVEL 75;
+RELATE USER "alice@dnacrypt.com" TRUSTS USER "charlie@dnacrypt.com" LEVEL 90;
+
+-- ============================================================================
+-- PART 4: Send Encrypted Messages
+-- ============================================================================
+
+-- Message 1: High security
+-- In production: Content would be AES-256-GCM encrypted ciphertext
+-- Sender/Receiver would be HMAC blind indexes
+$msg1 = SEND MESSAGE TO messages_secure_adult {"content": "[ENCRYPTED:k8JHb2F3cK9...]", "sender": "[BLIND_INDEX:a94a8fe5cc...]", "receiver": "[BLIND_INDEX:3b0c44298f...]", "urgency": "high"};
+
+-- Message 2: Medium security
+$msg2 = SEND MESSAGE TO messages_secure_adult {"content": "[ENCRYPTED:x7KmN3p9Qw...]", "sender": "[BLIND_INDEX:3b0c44298f...]", "receiver": "[BLIND_INDEX:7d8e2ab4fc...]", "urgency": "medium"};
+
+-- Message 3: Critical security
+$msg3 = SEND MESSAGE TO messages_secure_adult {"content": "[ENCRYPTED:p2LmK8n5Tw...]", "sender": "[BLIND_INDEX:7d8e2ab4fc...]", "receiver": "[BLIND_INDEX:a94a8fe5cc...]", "urgency": "critical"};
+
+-- ============================================================================
+-- PART 5: Store Encrypted + Signed DNA Sequences
+-- ============================================================================
+
+-- Sequence 1: Encrypted with AES-256-GCM + Ed25519 signature
+-- In production: Entire sequence would be encrypted ciphertext
+STORE SEQUENCE IN sequences_secure {"link_id": "${msg1.link_id}", "original": "[ENCRYPTED:Tm9uY2U6...]", "encrypted": "[ENCRYPTED+SIGNED:k8JHb2F3cK9...]", "digest": "AGCT", "final": "[SIGNED:Ed25519:...]"};
+
+-- Sequence 2: Different encryption key (forward secrecy)
+STORE SEQUENCE IN sequences_secure {"link_id": "${msg2.link_id}", "original": "[ENCRYPTED:cGFzc3dvcm...]", "encrypted": "[ENCRYPTED+SIGNED:x7KmN3p9Qw...]", "digest": "TAGC", "final": "[SIGNED:Ed25519:...]"};
+
+-- Sequence 3: Critical data - triple encrypted
+STORE SEQUENCE IN sequences_secure {"link_id": "${msg3.link_id}", "original": "[ENCRYPTED:bXlzZWNyZX...]", "encrypted": "[ENCRYPTED+SIGNED:p2LmK8n5Tw...]", "digest": "GCAT", "final": "[SIGNED:Ed25519:...]"};
+
+-- ============================================================================
+-- PART 6: Add Cryptographic Metadata
+-- ============================================================================
+
+-- Record which algorithms were used (simplified - no nested JSON)
+ADD ALGORITHM TO algorithms_secure {"message_id": "${msg1.message_id}", "algorithm": "AES-256-GCM", "type": "encryption", "order": 1};
+
+ADD ALGORITHM TO algorithms_secure {"message_id": "${msg2.message_id}", "algorithm": "ChaCha20-Poly1305", "type": "encryption", "order": 1};
+
+-- Store public keys (plaintext OK)
+ADD KEY TO keys_secure {"message_id": "${msg1.message_id}", "public_key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCg...", "type": "RSA", "size": 4096};
+
+-- Store hashes for integrity
+ADD HASH TO hashes_secure {"message_id": "${msg1.message_id}", "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", "algorithm": "SHA256", "salt": "random_salt_2025"};
+
+-- ============================================================================
+-- PART 7: Track Access in Graph Database (Security Audit)
+-- ============================================================================
+
+-- Track who accessed what message
+TRACK ACCESS BY "bob@dnacrypt.com" TO MESSAGE "${msg1.message_id}" ACTION "decrypt" SUCCESS true;
+TRACK ACCESS BY "charlie@dnacrypt.com" TO MESSAGE "${msg2.message_id}" ACTION "read" SUCCESS true;
+TRACK ACCESS BY "alice@dnacrypt.com" TO MESSAGE "${msg3.message_id}" ACTION "decrypt" SUCCESS true;
+
+-- Simulated: Bob tries to access message not intended for him
+TRACK ACCESS BY "bob@dnacrypt.com" TO MESSAGE "${msg3.message_id}" ACTION "decrypt" SUCCESS false;
+
+-- ============================================================================
+-- PART 8: Security Analysis Queries
+-- ============================================================================
+
+-- Find connection paths (information flow analysis)
+FIND PATH FROM "alice@dnacrypt.com" TO "charlie@dnacrypt.com" MAX 5;
+
+-- Detect users with excessive access (potential insider threat)
+FIND PATTERN users WHO accessed MORE THAN 2 messages;
+
+-- Anomaly detection (unusual behavior)
+DETECT ANOMALY IN access patterns;
+
+-- ============================================================================
+-- PART 9: Cross-Database Joins
+-- ============================================================================
+
+-- Join all encrypted messages with their encrypted sequences
+JOIN messages_secure_adult WITH sequences_secure ON link_id;
+
+-- Join only critical messages
+JOIN messages_secure_adult WITH sequences_secure ON link_id WHERE urgency = "critical";
+
+-- ============================================================================
+-- PART 10: Retrieve Complete Encrypted Data
+-- ============================================================================
+
+-- Get data from all three databases
+-- Returns: MySQL metadata + MongoDB sequence + Neo4j relationships
+LINK DATA WHERE link_id = "${msg1.link_id}";
+
+-- ============================================================================
+-- PART 11: Show Statistics
+-- ============================================================================
+
+-- MySQL tables
+SHOW TABLES;
+
+-- MongoDB collections
+SHOW COLLECTIONS;
+
+-- Neo4j graph statistics
+SHOW GRAPH stats;
+
+-- ============================================================================
+-- What This Demonstrates:
+-- ============================================================================
+--
+-- ENCRYPTION (via encryption.py):
+--   ✓ Message content: AES-256-GCM encrypted (client-side)
+--   ✓ Sender/Receiver: Blind HMAC indexes (searchable)
+--   ✓ DNA sequences: Encrypted + Ed25519 signed
+--   ✓ Private keys: Never stored raw (wrapped with KEK)
+--   ✓ User PII: Field-level encryption
+--
+-- SEARCHABILITY:
+--   ✓ Search by sender (blind index equality match)
+--   ✓ Filter by urgency (plaintext metadata)
+--   ✓ Range queries by timestamp (plaintext dates)
+--   ✗ Cannot search encrypted content (by design)
+--
+-- SECURITY FEATURES:
+--   ✓ Database admin cannot read encrypted data
+--   ✓ Each message has unique DEK (forward secrecy)
+--   ✓ Signatures detect tampering
+--   ✓ Graph tracks access patterns
+--   ✓ Anomaly detection via Neo4j queries
+--
+-- TRIGLOT BENEFITS:
+--   ✓ MySQL: ACID transactions for metadata
+--   ✓ MongoDB: Flexible encrypted sequences
+--   ✓ Neo4j: Relationship analysis and threat detection
+--
+-- ============================================================================

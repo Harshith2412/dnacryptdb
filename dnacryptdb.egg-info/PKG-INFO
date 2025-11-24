@@ -2,11 +2,11 @@ Metadata-Version: 2.4
 Name: dnacryptdb
 Version: 1.0.0
 Summary: A polyglot database system with custom query language for MySQL and MongoDB
-Home-page: https://github.com/yourusername/dnacryptdb
-Author: Harshith
-Author-email: harshith@northeastern.edu
-Project-URL: Bug Reports, https://github.com/yourusername/dnacryptdb/issues
-Project-URL: Source, https://github.com/yourusername/dnacryptdb
+Home-page: https://github.com/Harshith2412/dnacryptdb
+Author: Harshith Madhavaram
+Author-email: madhavaram.harshith2412@gmail.com
+Project-URL: Bug Reports, https://github.com/Harshith2412/dnacryptdb/issues
+Project-URL: Source, https://github.com/Harshith2412/dnacryptdb
 Keywords: database polyglot mysql mongodb dnacrypt query-language
 Classifier: Development Status :: 4 - Beta
 Classifier: Intended Audience :: Developers
@@ -40,22 +40,16 @@ A polyglot database system with a custom query language that unifies MySQL (rela
 
 ## Features
 
-- **Unified Query Language**: One syntax for both MySQL and MongoDB
-- **Automatic Backend Routing**: Structured data → MySQL, Flexible data → MongoDB
-- **SQL Injection Proof**: Parameterized queries throughout
-- **Script Files**: Write `.dnacdb` files and execute them
-- **Interactive Mode**: Test queries in real-time
-- **Easy Configuration**: Simple JSON config file
+- Unified Query Language**: One syntax for both MySQL and MongoDB
+- Automatic Backend Routing**: Structured data → MySQL, Flexible data → MongoDB
+- SQL Injection Proof**: Parameterized queries throughout
+- Script Files**: Write `.dnacdb` files and execute them
+- Interactive Mode**: Test queries in real-time
+- Easy Configuration**: Simple JSON config file
 
 ## Installation
 
-### From Source
 
-```bash
-git clone https://github.com/yourusername/dnacryptdb.git
-cd dnacryptdb
-pip install -e .
-```
 
 ### From PyPI (once published)
 
@@ -376,8 +370,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## Support
 
 For issues, questions, or contributions, please visit:
-- GitHub Issues: https://github.com/yourusername/dnacryptdb/issues
-- Email: harshith@northeastern.edu
+- GitHub Issues: https://github.com/Harshith2412/dnacryptdb/issues
+- Email: madhavaram.harshith2412@gmail.com
 
 ## Changelog
 
